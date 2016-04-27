@@ -1,0 +1,8 @@
+mc855/wpr/job2/calculate/RankCalculateReduce.class
+mc855/wpr/WikiPageRanking.class
+mc855/wpr/job1/xmlhakker/WikiLinksReducer.class
+mc855/wpr/job1/xmlhakker/XmlInputFormat$XmlRecordReader.class
+mc855/wpr/job3/result/RankingMapper.class
+mc855/wpr/job2/calculate/RankCalculateMapper.class
+mc855/wpr/job1/xmlhakker/WikiPageLinksMapper.class
+mc855/wpr/job1/xmlhakker/XmlInputFormat.class
