@@ -2,16 +2,32 @@
 
 import re, urllib
 
-def getDecendentsUrl (url, textfile):
+def getDecendentsUrl (url, result):
 	if (url.startswith(myurl)):
+		finded = False
 		print url
-		textfile.write(url)
-		for i in re.findall('''href=["'](.[^"']+)["']''', urllib.urlopen(myurl).read(), re.I):
-			getDecendentsUrl(i, textfile)	
+		for r in result:
+			if (r[1] == url):
+				finded = True
+				r[0] = r[0] + 1
+		if (finded == False):
+			t = []
+			count = 1
+			t.append(count)
+			t.append(url)
+			result.append(t)
+			for i in re.findall('''href=["'](.[^"']+)["']''', urllib.urlopen(url).read(), re.I):
+				getDecendentsUrl(i, result)	
+		
+def getCount(item):
+	return item[0]
 
 textfile = file('depth_1.txt','wt')
+result = []
 print "Enter the URL you wish to crawl.."
 print 'Usage  - "http://phocks.org/stumble/creepy/" <-- With the double quotes'
 myurl = input("@> ")
-getDecendentsUrl(myurl, textfile)
+getDecendentsUrl(myurl, result)
+for t in sorted(result, key=getCount):
+	textfile.write(str(t[0]) + " " + t[1] + "\n")
 textfile.close()
