@@ -3,7 +3,9 @@
 import re, urllib
 
 def getDecendentsUrl (url, result):
-	if (url.startswith(myurl)):
+	if (url.startswith(myurl) or url.startswith('/')):
+		if (url.startswith('/')):
+			url = myurl + url[1:]
 		finded = False
 		print url
 		for r in result:

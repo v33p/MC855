@@ -54,6 +54,9 @@ def getWikiPageFromLink (link):
 
     return link
 
+def map_xml (xml_file):
+    p = re.compile ('\\[.+?\\]')
+
 def parseXml (xml_file):
     # pattern para para encontrar proximos links
     p = re.compile ('\\[.+?\\[')
