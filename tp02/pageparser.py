@@ -8,12 +8,14 @@ import unicodedata
 
 xml_hc = '{http://www.mediawiki.org/xml/export-0.10/}'
 
-oldpatterns = ["Político", "Cientista", "Lutador", "Papa", "Ator", "Futebolista", "Escritor", "Biografia", "esporte/atleta", "Esporte/Atleta", "piloto", "Piloto", "Autor", "Motorista", "Médico", "Jornalista", "Surfista", "Gamer", "Sacerdote", "Exadrista", "Lutador", "Beisebolista", "Treinador", "Astronauta", "Tenista", "Automobilista", "Filósofo", "Árbitro", "Arquiteto", "Jogador", "Boxeador", "Psicólogo", "Voleibol/Jogador", "Criminoso", "Patinador", "Empresario", "Serial Killer", "Nadador", "Arqueiro", "Revolucionário", "Fisiculturista"]
+#oldpatterns = ["Político", "Cientista", "Lutador", "Papa", "Ator", "Futebolista", "Escritor", "Biografia", "esporte/atleta", "Esporte/Atleta", "piloto", "Piloto", "Autor", "Motorista", "Médico", "Jornalista", "Surfista", "Gamer", "Sacerdote", "Exadrista", "Lutador", "Beisebolista", "Treinador", "Astronauta", "Tenista", "Automobilista", "Filósofo", "Árbitro", "Arquiteto", "Jogador", "Boxeador", "Psicólogo", "Voleibol/Jogador", "Criminoso", "Patinador", "Empresario", "Serial Killer", "Nadador", "Arqueiro", "Revolucionário", "Fisiculturista"]
 
 patterns = ["Politico", "Cientista", "Lutador", "Papa", "Ator", "Futebolista", "Escritor", "Biografia", "esporte/atleta", "Esporte/Atleta", "piloto", "Piloto", "Autor", "Motorista", "Medico", "Jornalista", "Surfista", "Gamer", "Sacerdote", "Exadrista", "Lutador", "Beisebolista", "Treinador", "Astronauta", "Tenista", "Automobilista", "Filosofo", "Arbitro", "Arquiteto", "Jogador", "Boxeador", "Psicologo", "Voleibol/Jogador", "Criminoso", "Patinador", "Empresario", "Serial Killer", "Nadador", "Arqueiro", "Revolucionario", "Fisiculturista"]
 
 def validPage (page):
     title = page.find (xml_hc+'title').text
+    if (type (title) == type (unicode)):
+        title = unicodedata.normalize ('NFKD', text).encode ('ascii', 'ignore') 
     return (":" not in title)
 
 def isPerson (page):
@@ -21,10 +23,11 @@ def isPerson (page):
     for t in texts:
 	text = t.text
     result = False
-    text = unicodedata.normalize ('NFKD', text).encode('ascii', 'ignore')
-    print type (text)
+    if (type (text) == type (unicode)):
+        text = unicodedata.normalize ('NFKD', text).encode ('ascii', 'ignore')
+    #print type (text)
     for p in patterns:
-	print type (p)
+	#print type (p)
         if ("Info/"+p in text):
             result = True
     return result
@@ -75,12 +78,14 @@ def parseXml (xml_file, parse_file):
 
     f = open (parse_file, 'w')
 
-    #print ('parse ' + str(xml_file))
+    print ('parse ' + str(xml_file))
     
     # para cada pagina
     for page in root.iter (xml_hc+'page'):
 	title = page.find (xml_hc+'title').text
 	title = title.replace (" ", "_")
+        if (type (title) == type (unicode)):
+            title = unicodedata.normalize ('NFKD', text).encode ('ascii', 'ignore') 
         print ('page found: ' + title)
         if (validPage (page)):
             print (title + ' validPage')
@@ -89,15 +94,20 @@ def parseXml (xml_file, parse_file):
                 texts = page.iter (xml_hc+'text')
 		for t in texts:
 		    text = t.text
-    		text = unicodedata.normalize ('NFKD', text).encode('ascii', 'ignore')
+    		if (type (text) == type (unicode)):
+                    text = unicodedata.normalize ('NFKD', text).encode('ascii', 'ignore')
                 matcher = p.match (text)
                 links = p.findall (text)
                 for link in links:
+                    if (type (link) == type (unicode)):
+                        link = unicodedata.normalize ('NFKD', link).encode ('ascii', 'ignore') 
                     print ('link found: ' +link)
                     if (isWikiLink (link) == True):
                         link = getWikiPageFromLink (link)
                         print (link + ' added')
-                        f.write (title + ' ' + link+'\n')
+                        if (type (link) == type (unicode)):
+                            link = unicodedata.normalize ('NFKD', link).encode ('ascii', 'ignore')
+                        f.write (str(title) + ' ' + str(link)+'\n')
     f.close ()
 
 if len (sys.argv) != 3:
