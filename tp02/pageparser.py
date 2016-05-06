@@ -1,3 +1,5 @@
+!#/bin/bash/
+
 import xml.etree.ElementTree
 
 from pyspark import SparkContext
@@ -54,7 +56,7 @@ def getWikiPageFromLink (link):
 
     return link
 
-def parseXml (xml_file):
+def parseXml (xml_file, parse_file):
     # pattern para para encontrar proximos links
     p = re.compile ('\\[.+?\\[')
     # iniciando arvore xml
@@ -62,12 +64,22 @@ def parseXml (xml_file):
     # adiquirindo root
     root = tree.getroot ()
     
+    f = open (parse_file, 'w')
+
     # para cada pagina
     for page in root.iter ('page'):
         if (validPage (page)):
             if (isPerson (page)):
+                title = page.find ('title')
+                matcher = p.match (page.find ('text'))
                 links = p.findall (page.find ('text'))
                 for link in links:
-                    
-                #matcher = p.match (page.find ('text'))
-                
+                    if (isWikiLink (link) == True):
+                        link = getWikiPageFromLink (link)
+                        f.write (title + ' ' + link)
+
+if __name__ == "__main__":
+    if len (sys.argv) != 3:
+        print "wrong parameters"
+        exit (-1)
+    parseXml (sys.argv[1], sys.argv[2])

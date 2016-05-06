@@ -57,6 +57,11 @@ def getWikiPageFromLink (link):
 def map_xml (xml_file):
     p = re.compile ('\\[.+?\\]')
 
+    sc = SparkContext (appName="PythonPageParse")
+
+    lines = sc.textFile (xml_file, 1)
+    
+
 def parseXml (xml_file):
     # pattern para para encontrar proximos links
     p = re.compile ('\\[.+?\\[')
